@@ -1,21 +1,36 @@
 import React from "react"
-import { Link } from "gatsby"
+import { graphql, Link } from "gatsby"
 
 import Layout from "../components/layout"
-import Image from "../components/image"
-import SEO from "../components/seo"
+import Hero from "../components/hero"
+import SpaceFacts from "../components/spaceFacts"
+import SpaceStation from "../components/spaceStation"
 
-const IndexPage = () => (
+const IndexPage = ({ data }) => (
   <Layout>
-    <SEO title="Home" />
-    <h1>Hi people</h1>
-    <p>Welcome to your new Gatsby site.</p>
-    <p>Now go build something great.</p>
-    <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-      <Image />
-    </div>
-    <Link to="/page-2/">Go to page 2</Link>
+    <Link to="/details">
+      {/* TODO use media_type value to provide fallback when not an image */}
+      <Hero image={data.allNasaData.edges[0].node} />
+    </Link>
+    <SpaceFacts />
+    <SpaceStation />
   </Layout>
 )
+
+// TODO figure out how to fetch unstructured data
+export const query = graphql`
+  query {
+    allNasaData(filter: {type: {eq: "apod"}}) {
+      edges {
+        node {
+          explanation
+          media_type
+          title
+          url
+        }
+      }
+    }
+  }
+`
 
 export default IndexPage
